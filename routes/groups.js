@@ -32,8 +32,8 @@ rooter.post("/", (req, res) => {
 
 rooter.get("/", (req, res) => {
     Group.find()
-        .then((Books) => {
-            res.send(Books);
+        .then((Group) => {
+            res.send(Group);
         })
         .catch((err) => {
             res.send(err);

@@ -2,19 +2,28 @@ const express = require("express");
 const rooter = express.Router();
 const Task = require("../models/tasks");
 
-rooter.get("/", (req, res) => {});
-
+/**
+ * CREATE
+ */
 rooter.post("/", (req, res) => {
     const { body } = req;
-
+    const {
+        name,
+        description,
+        deadline,
+        priority,
+        status,
+        group_name,
+        created_by,
+    } = body;
     newTask = new Task({
-        name: body.name,
-        description: body.description,
-        deadline: body.deadline,
-        priority: body.priority,
-        status: body.status,
-        group_name: body.group_name,
-        created_by: body.created_by,
+        name: name,
+        description: description,
+        deadline: deadline,
+        priority: priority,
+        status: status,
+        group_name: group_name,
+        created_by: created_by,
     });
 
     newTask
@@ -28,6 +37,73 @@ rooter.post("/", (req, res) => {
             }
             res.status(400).send(err);
         });
+});
+/**
+ * READ
+ */
+rooter.get("/", (req, res) => {
+    Task.find()
+        .then((Task) => {
+            res.send(Task);
+        })
+        .catch((err) => {
+            res.send(err);
+        });
+});
+rooter.get("/:taskId", (req, res) => {
+    Task.findById(req.params.taskId)
+        .then((task) => {
+            if (!task) {
+                res.status(404).send("Task not found!");
+            }
+            res.send(task);
+        })
+        .catch((err) => {
+            res.send(err);
+        });
+});
+/**
+ * UPDATE
+ */
+rooter.put("/:taskId", async (req, res) => {
+    const { body } = req;
+    const {
+        name,
+        description,
+        deadline,
+        priority,
+        status,
+        group_name,
+        created_by,
+    } = body;
+    const updatedTask = await Task.findByIdAndUpdate(
+        req.params.taskId,
+        {
+            name: name,
+            description: description,
+            deadline: deadline,
+            priority: priority,
+            status: status,
+            group_name: group_name,
+            created_by: created_by,
+        },
+        { new: true }
+    );
+
+    if (!updatedTask) {
+        res.status(404).send("Task not found!");
+    }
+    res.send(updatedTask);
+});
+/**
+ * DELETE
+ */
+rooter.delete("/:taskId", async (req, res) => {
+    const task = await Task.findByIdAndRemove(req.params.taskId);
+    if (!task) {
+        res.status(404).send("Task not found!");
+    }
+    res.send(task);
 });
 
 module.exports = rooter;
