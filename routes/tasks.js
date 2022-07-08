@@ -62,6 +62,15 @@ rooter.get("/:taskId", (req, res) => {
             res.send(err);
         });
 });
+rooter.get("/user/:created_by", (req, res) => {
+    Task.find({ created_by: req.params.created_by })
+        .then((task) => {
+            res.send(task);
+        })
+        .catch((err) => {
+            res.send(err);
+        });
+});
 /**
  * UPDATE
  */
