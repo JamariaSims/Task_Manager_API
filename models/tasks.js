@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-//TASK SCHEMA
+/* ------------------------------- TASK SCHEMA ------------------------------ */
 
 const TaskSchema = new mongoose.Schema({
   name: {
